@@ -11,9 +11,13 @@
       >
         <base-material-card color="#31467C" icon="mdi-ferry">
           <template v-slot:after-heading>
-            <div class="font-weight-light card-title mt-2">
-             Confirmar Servicio
-              <span class="body-1">— Completa todos los campos</span>
+            <div v-if="editedIndex" class="font-weight-light card-title mt-2">
+             Editar Servicio
+              <span class="body-2">— Completa todos los campos</span>
+            </div>
+            <div v-if="editedIndex==false" class="font-weight-light card-title mt-2">
+             Nuevo Servicio
+              <span class="body-2">— Completa todos los campos</span>
             </div>
           </template>
 
@@ -30,13 +34,26 @@
                   />
                 </v-col>
 
-                <v-col
+                   <v-col
                   cols="12"
                   md="4"
                 >
+                  <v-select
+                    :items="servicios"
+                    label="Tipo de Servicios"
+                    :change="servicioSeleccionado()"
+                    v-model="tipoServicio"
+                  />
+                </v-col>
+
+                <v-col
+                  cols="12"
+                  md="4"
+                  v-if="this.mostrarEmbarcacion"
+                >
                  <v-select
                 :items="embarcaciones"
-
+                 v-model="embarcacion"
                 label="Embarcaciones"
               />
                 </v-col>
@@ -46,113 +63,227 @@
                   md="4"
                 >
                   <v-select
-                :items="agencias"
-
-                label="Agencias"
-              />
+                    :items="agencias"
+                    label="Agencias"
+                    v-model="agencia"
+                  />
                 </v-col>
 
+                  <v-col
+                  cols="12"
+                  md="4"
+                >
+                  <v-select
+                    :items="puertos"
+                    label="Puerto"
+                    v-model="puerto"
+                  />
+                </v-col>
                 <v-col
                   cols="12"
-                  md="3"
+                  md="4"
                 >
-                      <v-menu
-                    ref="menu2"
-                      v-model="menu3"
-                      :close-on-content-click="false"
-                      :return-value.sync="date"
-                      transition="scale-transition"
-                      min-width="290px"
-                      offset-y
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field
-                          v-model="date3"
-                          color="secondary"
-                           label="Fecha tentativa"
-                          prepend-icon="mdi-calendar-outline"
-                          readonly
-                          v-on="on"
-                        />
-                      </template>
-
-                      <v-date-picker
-                        v-model="date3"
-                        color="secondary"
-                        landscape
-                        scrollable
-                        @input="menu3 = false"
-                      >
-                        <v-spacer />
-
-                        <v-btn
-                          color="secondary"
-                          large
-                          @click="menu3 = false"
-                        >
-                          Cancel
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
+                   <v-text-field
+                      label="Fecha tentativa"
+                      type="datetime-local"
+                      v-model="fechaTentativa"
+                   ></v-text-field>
                 </v-col>
-
-                <v-col
+                  <v-col
                   cols="12"
-                  md="6"
+                  md="4"
                 >
-                  <v-menu
-                    ref="menu"
-                    v-model="menu2"
-                    :close-on-content-click="false"
-                    :nudge-right="40"
-                    :return-value.sync="time"
-                    transition="scale-transition"
-                    offset-y
-                    max-width="290px"
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="time"
-                        label="Hora tentativa"
-                        prepend-icon="mdi-clock-time-four-outline"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                      ></v-text-field>
-                    </template>
-                    <v-time-picker
-                      v-if="menu2"
-                      v-model="time"
-                      full-width
-                      @click:minute="$refs.menu.save(time)"
-                    ></v-time-picker>
-                  </v-menu>
+                   <v-text-field
+                      label="Cliente"
+                      v-model="cliente"
+                   ></v-text-field>
                 </v-col>
-
-                <v-col cols="12">
+                <v-col cols="8">
                   <v-textarea
                     class="purple-input"
                     label="Programa a realizar"
                     value=""
+                    v-model="programa"
                   />
+
                 </v-col>
 
-                <v-col
-                  cols="12"
-                  class="text-right"
-                >
+                <v-col cols="10" class="text-right">
+                <v-dialog v-model="dialog" persistent max-width="290">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn    v-if="!editedIndex" color="primary" dark v-bind="attrs" v-on="on">
+                     Nuevo Servicio Tentativo
+                    </v-btn>
+                      </template>
+                      <v-card>
+                        <v-card-title class="text-h5">
+                          ¿Registrar nuevo servicio tentativo?
+                        </v-card-title>
+                        <v-card-text>Se realizará el registro del servicio y quedara en estatus de "Servicio Tentativo" en espera de su confirmación</v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn
+                            color="green darken-1"
+                            text
+                            @click="dialog = false"
+                          >
+                            Salir
+                          </v-btn>
+                          <v-btn
+                            color="#31467C"
+                            class="mr-0"
+
+                            text
+                            @click="guardar"
+
+                          >
+                            Guardar
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+
                   <v-btn
                     color="#31467C"
                     class="mr-0"
+                    @click="guardar"
+                    v-if="editedIndex"
                   >
-                    Guardar Servicio Tentativo
+                    Editar Servicio Tentativo
+                  </v-btn>
+
+
+                </v-col>
+                 <v-col
+                  cols="1"
+                  class="text-right"
+                >
+
+                  <v-btn
+                    color="#66B6BC"
+                    class="mr-0"
+                    @click="salirEdicion"
+                    v-if="editedIndex"
+                  >
+                    Salir de edicion
                   </v-btn>
                 </v-col>
               </v-row>
             </v-container>
           </v-form>
         </base-material-card>
+         <base-material-card
+            color="#31467C"
+            icon="mdi-clipboard-text"
+          > <template v-slot:after-heading>
+            <div class="font-weight-light card-title mt-2">
+             Mis servicios
+            </div>
+          </template>
+      <v-data-table
+        :headers="headers"
+        :items="servicionTentativos "
+        :search.sync="search"
+        :sort-by="['tipoServicio', 'puerto']"
+        multi-sort
+      >
+        <template v-slot:item.estado="{ item }">
+          <v-chip small class="ma-2" color="orange" text-color="white" v-if="item.estado=='En Proceso'">
+            <v-avatar left>
+              <v-icon small>mdi-restore</v-icon>
+            </v-avatar>Tentativo
+          </v-chip>
+
+          <v-chip small class="ma-2" color="success" text-color="white" v-if="item.estado=='Confirmado'">
+            <v-avatar left>
+              <v-icon small>mdi-check</v-icon>
+            </v-avatar>Confirmado
+          </v-chip>
+           <v-chip small class="ma-2" color="orange" text-color="white" v-if="item.estado=='On Hire Realizado'">
+            <v-avatar left>
+              <v-icon small>mdi-toggle-switch</v-icon>
+            </v-avatar>On Hire Pendiente de Firma
+          </v-chip>
+          <v-chip small class="ma-2" color="error" text-color="white" v-if="item.estado=='Cancelado'">
+            <v-avatar left>
+              <v-icon small>mdi-close</v-icon>
+            </v-avatar>Cancelado
+          </v-chip>
+
+        </template>
+        <template  v-slot:item.action="{ item }">
+
+
+             <v-btn v-if="item.estado=='En Proceso' || item.estado=='Confirmado'" class="px-2 ml-1" color="red"  @click="dialogCancelarEjecutar(item)" dark v-bind="attrs" v-on="on" min-width="0" small>
+                     <v-icon small>mdi-close</v-icon>
+               </v-btn>
+            <v-btn v-if="item.estado=='En Proceso' " class="px-2 ml-1" color="orange" @click="editItem(item)" min-width="0" small>
+                <v-icon small>mdi-pencil</v-icon>
+           </v-btn>
+            <v-btn v-if="item.estado=='En Proceso'" class="px-2 ml-1" @click="dialogConfirmarEjecutar(item,1)" color="success" min-width="0" small>
+                <v-icon small>mdi-check</v-icon>
+           </v-btn>
+               <v-btn v-if="item.estado=='On Hire Realizado'" class="px-2 ml-1" @click="confirmarServicio(item)" color="orange" min-width="0" small>
+                <v-icon small>mdi-toggle-switch</v-icon>
+           </v-btn>
+        </template>
+         <template  v-slot:item.fechaTentativa="{ item }">
+          {{moment(item.fechaTentativa).format('MMMM Do YYYY, h:mm a')}}
+        </template>
+      </v-data-table>
+
+      <v-dialog v-model="dialogCancelar" persistent max-width="300">
+      <v-card>
+        <v-card-title class="text-h5">
+          ¿Seguro que decea cancelar el servicio?
+        </v-card-title>
+        <v-card-text>Al cancelar este registro, ya no podra modificarlo</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="dialogCancelar = false"
+          >
+            Salir
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click=" cancelarServicio(_idCancelarv)"
+          >
+            Confirmar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+     <v-dialog v-model="dialogConfirmar" persistent max-width="300">
+      <v-card>
+        <v-card-title class="text-h5">
+          ¿Seguro que decea confirmar el servicio?
+        </v-card-title>
+        <v-card-text>El registro quedará con estatus Confirmado, el departamento de Log y Ag le dara seguimiento</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="dialogConfirmar = false"
+          >
+            Salir
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click=" confirmarServicio(_idConfirmar)"
+          >
+            Confirmar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    </base-material-card>
       </v-col>
     </v-row>
   </v-container>
@@ -160,30 +291,143 @@
 
 <script>
 import axios from 'axios'
-
+import emailjs from "emailjs-com";
+import moment from 'moment'
   export default {
     data() {
       return {
+        moment:moment,
+         headers: [
+          {
+            text: 'Actions',
+            value: 'action'
+          },
+          {
+            text: 'Tipo de servicio',
+            value: 'tipoServicio'
+          },
+          {
+            text: 'Folio',
+            value:'folio_ss'
+          },
+          {
+            text: 'Agencia',
+            value: 'agencia.nombre'
+          },
+          {
+            text: 'Embarcacion',
+            value: 'embarcacion.nombre'
+          },
+          {
+            text: 'Puerto',
+            value: 'puerto'
+          },
+          {
+            text: 'Tentativo',
+            value: 'fechaTentativa'
+          },
+          {
+            sortable: false,
+            text: 'Guia de Seguimiento',
+            value: '_id'
+          },
+          {
+            sortable: false,
+            text: 'Estatus',
+            value: 'estado'
+          }
+      ],
         embarcacion: '',
+        dialogConfirmar:false,
+        _idConfirmar : '',
         embarcaciones: [],
         agencia: '',
+        _idCancelarv:'',
+        dialog:false,
+        mostrarEmbarcacion: false,
+        tipoServicio:'',
+        cliente:'',
+        dialogCancelar:false,
         agencias: [],
+        puertos:['Ciudad del Carmen','Dos Bocas','Chiltepec','Frontera','Seybaplaya'],
+        puerto:'',
+        editedIndex:false,
+        programa:'',
+        direction:'',
+        colors:'',
+        snackbar: false,
+        servicios:['Fletamento','Cambio de Guardia','Tramite de Despacho'],
        date: '',
       date2: '2019-09-26',
       date3: '',
         time: null,
         menu2: false,
       menu: false,
-
+fechaTentativa:'',
       menu3: false,
+      servicionTentativos:[]
       }
     },
        created () {
           this.selectEmbarcaciones();
-          this.selectAgencias()
+          this.selectAgencias();
+          this.listar()
+          this.emailIn();
         },
 
     methods: {
+
+      emailIn() {
+        emailjs.init("user_QA8qMBuyHCQIHTgR0AsPx");
+      },
+
+      enviar(_id,folio_ss,embarcacion,puerto,estado,ejecutiva,correo)
+      {
+        var template_params = {
+          _id: _id,
+          folio_ss:folio_ss,
+          embarcacion: embarcacion,
+          puerto: puerto,
+          estado: estado,
+          ejecutiva:ejecutiva,
+          correo:correo
+        };
+
+        emailjs.send("service_wfxf2xx", "servicioConfirmado", template_params).then(
+          function(response) {
+            if (response.text === "OK") {
+            }
+            console.log(
+              "SUCCESS. status=%d, text=%s",
+              response.status,
+              response.text
+            );
+          },
+          function(err) {
+            alert("Ocurrió un problema al enviar el correo");
+            console.log("FAILED. error=", err);
+          }
+        );
+    },
+
+    listarEmbarcacion(_id,folio_ss,embarcacion,puerto,estatus,ejecutiva,correo) {
+      let header = { Token: this.$store.state.token };
+      let me = this;
+      let embarcacion2;
+
+      let configuracion = { headers: header };
+      axios
+        .get("embarcacion/query?_id=" + embarcacion, configuracion)
+        .then(function(response) {
+          embarcacion2 = response.data;
+          me.enviar(_id,folio_ss,embarcacion2,puerto,estatus,ejecutiva,correo);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+
+
        selectEmbarcaciones() {
             const me = this;
             let embarcacionArray = [];
@@ -213,6 +457,189 @@ import axios from 'axios'
               console.log(error);
             })
           },
+          servicioSeleccionado(){
+            if(this.tipoServicio==='Fletamento'){
+              this.mostrarEmbarcacion = true
+            }else{
+              this.mostrarEmbarcacion = false
+            }
+          },
+
+
+
+          limpiar(){
+              this.embarcacion='',
+              this.agencia='',
+              this.tipoServicio='',
+              this.puerto='',
+              this.fechaTentativa='',
+              this.programa='',
+              this.editedIndex = false
+              this._id=''
+            },
+
+             guardar() {
+              let me = this;
+              let header = { Token: this.$store.state.token };
+              let configuracion = { headers: header };
+              this.dialog=false
+              if(this.editedIndex){
+                axios
+                  .put(
+                    "confirmarServicio/edit",
+                    {
+                      _id : this._id,
+                      embarcacion: this.embarcacion,
+                      usuario: this.$store.state.usuario._id,
+                      agencia: this.agencia,
+                      tipoServicio: this.tipoServicio,
+                      puerto: this.puerto,
+                      fechaTentativa: this.fechaTentativa,
+                      programa: this.programa,
+                      cliente:this.cliente
+                    },
+                    configuracion
+                  )
+                  .then(function(response) {
+                    me.addSuccessNotification('Registro editado exitosamente')
+                    me.limpiar()
+                    me.listar()
+
+                  })
+                  .catch(function(error) {
+
+                    me.addErrorNotification('Error, verifica la informacion agregada')
+                  });
+              }else{
+                axios
+                  .post(
+                    "confirmarServicio/add",
+                    {
+                      embarcacion: this.embarcacion,
+                      usuario: this.$store.state.usuario._id,
+                      agencia: this.agencia,
+                      tipoServicio: this.tipoServicio,
+                      puerto: this.puerto,
+                      fechaTentativa: this.fechaTentativa,
+                      programa: this.programa,
+                      cliente:this.cliente
+                    },
+                    configuracion
+                  )
+                  .then(function(response) {
+                    me.addSuccessNotification('Registro agregado exitosamente')
+                    me.limpiar()
+                    me.listar()
+
+                  })
+                  .catch(function(error) {
+
+                    me.addErrorNotification('Error, verifica la informacion agregada')
+                  });
+              }
+
+              },
+            listar(){
+              let header={"Token":this.$store.state.token};
+              let configuracion= {headers: header}
+              let me=this;
+              axios.get('confirmarServicio/list',configuracion).then(function (response){
+              me.servicionTentativos=response.data;
+              }).catch(function(error){
+                console.log(error)
+              })
+            },
+            salirEdicion(){
+              this.editedIndex = false
+              this.limpiar()
+            },
+
+          editItem(item){
+            this.tipoServicio = item.tipoServicio,
+            this.embarcacion = item.embarcacion._id,
+            this.agencia = item.agencia._id,
+            this.puerto = item.puerto,
+            this.fechaTentativa = item.fechaTentativa
+            this.cliente = item.cliente
+            this.programa = item.programa,
+            this._id = item._id
+            this.editedIndex = true
+          },
+          confirmarServicio(_id){
+          let me=this;
+          this.dialogConfirmar = false
+           let header={"Token":this.$store.state.token};
+           let configuracion= {headers: header}
+           axios.put('confirmarServicio/confirmar',{'_id':_id},configuracion)
+               .then(function(response){
+                me.addSuccessNotification('Servicio confirmado exitosamente')
+                me.limpiar()
+                me.listar();
+                 me.listarEmbarcacion(
+                      response.data._id,
+                      response.data.folio_ss,
+                      response.data.embarcacion,
+                      response.data.puerto,
+                      response.data.estado,
+                      response.data.usuario[0].nombre,
+                      response.data.correo,
+                    );
+               }).catch(function(error){
+                 console.log(error)
+               });
+        },
+        dialogCancelarEjecutar(item){
+          this.dialogCancelar =  true
+          this._idCancelarv = item._id
+        },
+        dialogConfirmarEjecutar(item){
+          this.dialogConfirmar =  true
+          this._idConfirmar = item._id
+        },
+         cancelarServicio(_id){
+          let me=this;
+          this.dialogCancelar = false
+           let header={"Token":this.$store.state.token};
+           let configuracion= {headers: header}
+           axios.put('confirmarServicio/cancelar',{'_id':_id},configuracion)
+               .then(function(response){
+                me.addSuccessNotification('Servicio cancelado exitosamente')
+                me.limpiar()
+                me.listar();
+               }).catch(function(error){
+                 console.log(error)
+               });
+        },
+
+
+            addErrorNotification() {
+                this.$toast.error("Error, verifique los campos ingresados", {
+                position: 'bottom-right',
+                timeout: 2000,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                draggablePercent: 0.6,
+                showCloseButtonOnHover: false,
+                hideProgressBar: true,
+                closeButton: "button",
+                icon: true
+            });
+        },
+         addSuccessNotification(mensaje) {
+                this.$toast.success(mensaje, {
+                position: 'top-right',
+                timeout: 2000,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                draggablePercent: 0.6,
+                showCloseButtonOnHover: false,
+                hideProgressBar: true,
+                closeButton: "button",
+                icon: true
+            });
+        },
+    },
     }
-  }
 </script>

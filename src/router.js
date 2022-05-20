@@ -33,7 +33,7 @@ const router = new Router({
           name: 'Register',
           path: 'register',
           component: () => import('@/views/pages/Register')
-        }
+        },
       ]
     },
     {
@@ -54,7 +54,11 @@ const router = new Router({
         {
           name: 'RTL',
           path: 'pages/rtl',
-          component: () => import('@/views/dashboard/pages/Rtl')
+          component: () => import('@/views/dashboard/pages/Rtl'),
+          meta: {
+            root: true,
+            cliente: true
+          }
         },
         {
           name: 'User Profile',
@@ -81,12 +85,20 @@ const router = new Router({
         {
           name: 'Tabs',
           path: 'components/tabs',
-          component: () => import('@/views/dashboard/component/Tabs')
+          component: () => import('@/views/dashboard/component/Tabs'),
+          meta: {
+            root: true,
+            cliente: true
+          }
         },
         {
           name: 'Notifications',
           path: 'components/notifications',
-          component: () => import('@/views/dashboard/component/Notifications')
+          component: () => import('@/views/dashboard/component/Notifications'),
+          meta: {
+            root: true,
+            cliente:true
+          }
         },
         {
           name: 'Icons',
@@ -139,17 +151,29 @@ const router = new Router({
         {
           name: 'Regular Tables',
           path: 'tables/regular-tables',
-          component: () => import('@/views/dashboard/tables/RegularTables')
+          component: () => import('@/views/dashboard/tables/RegularTables'),
+          meta: {
+            root: true,
+            cliente: true
+          }
         },
         {
           name: 'Extended Tables',
           path: 'tables/extended-tables',
-          component: () => import('@/views/dashboard/tables/ExtendedTables')
+          component: () => import('@/views/dashboard/tables/ExtendedTables'),
+          meta: {
+            root: true,
+            cliente: true
+          }
         },
         {
           name: 'Data Tabels',
           path: 'tables/data-tables',
-          component: () => import('@/views/dashboard/tables/DataTables')
+          component: () => import('@/views/dashboard/tables/DataTables'),
+          meta: {
+            root: true,
+            cliente: true
+          }
         },
         // Maps
         // Root level
@@ -180,6 +204,15 @@ const router = new Router({
           name: 'Confirmar Servicio',
           path: 'confirmarServicio',
           component: () => import('@/views/dashboard/pages/ConfirmarServicio'),
+          meta: {
+            root: true,
+            cliente: true
+          }
+        },
+        {
+          name: 'OnHire',
+          path: 'onhire',
+          component: () => import('@/views/dashboard/pages/OnHire'),
           meta: {
             root: true,
             cliente: true

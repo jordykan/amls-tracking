@@ -7,8 +7,10 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    barColor: 'rgba(0, 0, 0, .8), rgba(0, 0, 0, .8)',
       token: null,
-      usuario: null
+      usuario: null,
+      drawer: null
   },
   mutations: {
     setToken(state, token) {
@@ -16,6 +18,15 @@ export default new Vuex.Store({
     },
     setUsuario(state, usuario) {
      state.usuario = usuario
+    },
+    SET_BAR_IMAGE(state, payload) {
+      state.barImage = payload
+    },
+    SET_DRAWER(state, payload) {
+      state.drawer = payload
+    },
+    SET_SCRIM(state, payload) {
+      state.barColor = payload
     }
 
   },

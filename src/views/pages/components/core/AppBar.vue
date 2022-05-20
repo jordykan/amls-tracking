@@ -41,31 +41,13 @@
 
     data: () => ({
       items: [
-        {
-          icon: 'mdi-view-dashboard',
-          text: 'Dashboard',
-          to: '/'
-        },
-        {
-          icon: 'mdi-currency-usd',
-          text: 'Pricing',
-          to: '/pages/pricing'
-        },
-        {
-          icon: 'mdi-account-multiple-plus',
-          text: 'Register',
-          to: '/pages/register'
-        },
+
         {
           icon: 'mdi-fingerprint',
           text: 'Login',
           to: '/pages/login'
         },
-        {
-          icon: 'mdi-lock-open-outline',
-          text: 'Lock',
-          to: '/pages/lock'
-        }
+
       ],
       titles: {
         '/pages/lock': 'Lock Page',

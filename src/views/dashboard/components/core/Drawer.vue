@@ -6,7 +6,7 @@
     :expand-on-hover="expandOnHover"
     :right="$vuetify.rtl"
     :src="barImage"
-    mobile-break-point="960"
+    mobile-breakpoint="960"
     app
     width="260"
     v-bind="$attrs"
@@ -20,12 +20,13 @@
 
     <v-list-item two-line>
       <v-list-item-content>
-        <v-list-item-title class="text-uppercase font-weight-regular display-2">
-          <span class="logo-mini">{{ $t('ct') }}</span>
-          <span class="logo-normal">{{ $t('tim') }}</span>
+        <v-list-item-title  class="font-weight-regular display-2">
+          <span class="logo-mini">Seguimiento de Servicios</span>
+
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
+
 
     <v-divider class="mb-1" />
 
@@ -46,21 +47,39 @@
       <!-- https://github.com/vuetifyjs/vuetify/pull/8574 -->
       <div />
 
-      <template v-for="(item, i) in computedItems">
-        <base-item-group
-          v-if="item.children"
-          :key="`group-${i}`"
-          :item="item"
-        >
-          <!--  -->
-        </base-item-group>
+        <v-list dense nav>
+           <v-list-item  :to="'/'">
+          <v-list-item-icon>
+            <v-icon>mdi-view-dashboard</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content >
+            <v-list-item-title>Dashboard</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        </v-list>
 
-        <base-item
-          v-else
-          :key="`item-${i}`"
-          :item="item"
-        />
-      </template>
+          <v-list dense nav>
+           <v-list-item  :to="'/confirmarServicio'">
+          <v-list-item-icon>
+            <v-icon>mdi-calendar-range</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content >
+            <v-list-item-title>Confirmar Servicio</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        </v-list>
+          <v-list dense nav>
+           <v-list-item  :to="'/onhire'">
+          <v-list-item-icon>
+            <v-icon>mdi-clipboard-clock-outline</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content >
+            <v-list-item-title>On-Hire</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        </v-list>
+
+
 
       <!-- Style cascading bug  -->
       <!-- https://github.com/vuetifyjs/vuetify/pull/8574 -->
@@ -98,143 +117,12 @@
           to: '/confirmarServicio'
         },
         {
-          group: '/pages',
-          icon: 'mdi-image',
-          title: 'pages',
-          children: [
-            {
-              title: 'pricing',
-              to: 'pricing'
-            },
-            {
-              title: 'rtl',
-              to: 'rtl'
-            },
-            {
-              title: 'timeline',
-              to: 'timeline'
-            },
+          icon: 'mdi-clipboard-clock-outline',
+          title: 'On Hire',
+          to: '/onhire'
+        },
 
-            {
-              title: 'login',
-              to: 'login'
-            },
-            {
-              title: 'register',
-              to: 'pricing'
-            },
-            {
-              title: 'lock',
-              to: 'lock'
-            },
-            {
-              title: 'user',
-              to: 'user'
-            },
-            {
-              title: 'error',
-              to: '404'
-            }
-          ]
-        },
-        {
-          group: '/components',
-          icon: 'mdi-view-comfy',
-          title: 'components',
-          children: [
-            {
-              title: 'multi',
-              group: '',
-              children: [
-                {
-                  title: 'example',
-                  href: '#'
-                }
-              ]
-            },
-            {
-              title: 'buttons',
-              to: 'buttons'
-            },
-            {
-              title: 'grid',
-              to: 'grid-system'
-            },
-            {
-              title: 'tabs',
-              to: 'tabs'
-            },
-            {
-              title: 'notifications',
-              to: 'notifications'
-            },
-            {
-              title: 'icons',
-              to: 'icons'
-            },
-            {
-              title: 'typography',
-              to: 'typography'
-            }
-          ]
-        },
-        {
-          group: '/forms',
-          icon: 'mdi-clipboard-outline',
-          title: 'forms',
-          children: [
-            {
-              title: 'rforms',
-              to: 'regular'
-            },
-            {
-              title: 'eforms',
-              to: 'extended'
-            },
-            {
-              title: 'vforms',
-              to: 'validation'
-            },
-            {
-              title: 'wizard',
-              to: 'wizard'
-            }
-          ]
-        },
-        {
-          group: '/tables',
-          icon: 'mdi-grid',
-          title: 'tables',
-          children: [
-            {
-              title: 'rtables',
-              to: 'regular-tables'
-            },
-            {
-              title: 'etables',
-              to: 'extended-tables'
-            },
-            {
-              title: 'dtables',
-              to: 'data-tables'
-            }
-          ]
-        },
-        {
-          icon: 'mdi-widgets',
-          title: 'widgets',
-          to: '/widgets'
-        },
-        {
-          icon: 'mdi-chart-timeline-variant',
-          title: 'charts',
-          to: '/charts'
-        },
-        {
-          icon: 'mdi-calendar-range',
-          title: 'calendar',
-          to: '/calendar'
-        }
+
       ]
     }),
 
@@ -259,9 +147,9 @@
       },
       profile () {
         return {
-          avatar: true,
+
           group: '',
-          title: this.$t('avatar'),
+          title: 'Jordy Can',
           children: [
             {
               href: '',

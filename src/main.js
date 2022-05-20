@@ -1,15 +1,3 @@
-// =========================================================
-// * Vuetify Material Dashboard PRO - v1.0.3
-// =========================================================
-//
-// * Product Page: https://www.creative-tim.com/product/vuetify-material-dashboard-pro
-// * Copyright 2019 Creative Tim (https://www.creative-tim.com)
-//
-// * Coded by Creative Tim
-//
-// =========================================================
-//
-// * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 import axios from 'axios'
 import Vue from 'vue'
 import App from './App.vue'
@@ -21,9 +9,16 @@ import './plugins/vee-validate'
 import './plugins/vue-world-map'
 import vuetify from './plugins/vuetify'
 import i18n from './i18n'
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+import moment from 'moment'
+
+Vue.use(Toast);
+Vue.use(moment)
+moment.locale('es') // returns the new locale, in this case 'de'
 
 Vue.config.productionTip = false
-axios.defaults.baseURL = "https://amls-sam.herokuapp.com/api/"
+axios.defaults.baseURL='http://localhost:3000/api/'
 
 new Vue({
   router,

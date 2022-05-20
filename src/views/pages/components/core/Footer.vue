@@ -33,11 +33,11 @@
           md="auto"
         >
           <div class="body-1 font-weight-light pt-6 pt-md-0 text-center">
-            &copy; 2019, made with
+            &copy; 2022, made with
             <v-icon size="20">
               mdi-heart
             </v-icon>
-            by Creative Tim for a better web.
+            by Jordy Can
           </div>
         </v-col>
       </v-row>
@@ -53,19 +53,19 @@
       links: [
         {
           href: '#',
-          text: 'Creative Tim'
+          text: 'Pagina Web'
         },
         {
           href: '#',
-          text: 'About Us'
+          text: 'Intranet'
         },
         {
           href: '#',
-          text: 'Blog'
+          text: 'SAM'
         },
         {
           href: '#',
-          text: 'Licenses'
+          text: 'Contacto'
         }
       ]
     })
