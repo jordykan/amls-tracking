@@ -6,13 +6,13 @@ cache: yarn
 before_install:
 # - chmod 755 ./deploy.sh
 install:
-- yarn install
+- npm install
 before_script:
 # - git config --global user.email "travis@travis-ci.org"
 # - git config --global user.name "Travis"
 script:
 # - chmod +x ./deploy-ghpages.sh
-- yarn build # Change this script to run your production build command
+- npm build # Change this script to run your production build command
 # - chmod +x ./deploy.sh
 # - "./deploy.sh"
 after_success:
