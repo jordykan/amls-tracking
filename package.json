@@ -7,10 +7,15 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "@fortawesome/vue-fontawesome": "^2.0.6",
+    "aws-s3": "^2.0.5",
     "axios": "^0.26.1",
     "chartist": "^0.11.4",
     "core-js": "^2.6.5",
     "emailjs-com": "^3.2.0",
+    "jspdf": "^2.5.1",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.15",
     "moment": "^2.29.3",
@@ -19,6 +24,7 @@
     "vue-chartist": "^2.2.1",
     "vue-i18n": "^8.14.1",
     "vue-router": "^3.0.3",
+    "vue-signature": "^2.5.5",
     "vue-toast-notification": "^3.0.0",
     "vue-toastification": "^1.7.14",
     "vue-world-map": "^0.1.1",

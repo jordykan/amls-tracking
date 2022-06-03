@@ -42,7 +42,10 @@ export default new Vuex.Store({
         commit("setToken", token)
         this.commit("setUsuario", decode(token))
       }
-      router.push({ name: 'Dashboard' })
+      const ruta = router.history._startLocation;
+      const rutaOriginal = ruta.slice(1)
+      router.push({ name: rutaOriginal })
+  //    console.log(router.history._startLocation)
     },
     salir({ commit }) {
       commit("setToken", null)

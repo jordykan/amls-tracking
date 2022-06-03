@@ -12,9 +12,12 @@ const router = new Router({
       component: () => import('@/views/pages/Index'),
       children: [
         {
-          name: 'Lock',
+          name: 'lock',
           path: 'lock',
-          component: () => import('@/views/pages/Lock')
+          component: () => import('@/views/pages/Lock'),
+           meta: {
+            libre: true
+          }
         },
         {
           name: 'Login',
@@ -201,7 +204,7 @@ const router = new Router({
           }
         },
         {
-          name: 'Confirmar Servicio',
+          name: 'confirmarServicio',
           path: 'confirmarServicio',
           component: () => import('@/views/dashboard/pages/ConfirmarServicio'),
           meta: {
@@ -210,9 +213,27 @@ const router = new Router({
           }
         },
         {
-          name: 'OnHire',
+          name: 'onhire',
           path: 'onhire',
           component: () => import('@/views/dashboard/pages/OnHire'),
+          meta: {
+            root: true,
+            cliente: true
+          }
+        },
+        {
+          name: 'ofhire',
+          path: 'ofhire',
+          component: () => import('@/views/dashboard/pages/OfHire'),
+          meta: {
+            root: true,
+            cliente: true
+          }
+        },
+        {
+          name: 'Movimientos',
+          path: 'movimientos',
+          component: () => import('@/views/dashboard/pages/Movimientos'),
           meta: {
             root: true,
             cliente: true

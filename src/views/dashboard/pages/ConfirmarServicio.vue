@@ -209,6 +209,17 @@
               <v-icon small>mdi-close</v-icon>
             </v-avatar>Cancelado
           </v-chip>
+           <v-chip small class="ma-2" color="blue" text-color="white" v-if="item.estado=='On-Hire Firmado'">
+            <v-avatar left>
+              <v-icon small>mdi-toggle-switch</v-icon>
+            </v-avatar>On-Hire Firmado
+          </v-chip>
+           <v-chip small class="ma-2" color="purple" text-color="white" v-if="item.estado=='En Transito'">
+            <v-avatar left>
+              <v-icon small>mdi-chart-timeline-variant-shimmer</v-icon>
+            </v-avatar>En ruta
+          </v-chip>
+
 
         </template>
         <template  v-slot:item.action="{ item }">
@@ -223,8 +234,14 @@
             <v-btn v-if="item.estado=='En Proceso'" class="px-2 ml-1" @click="dialogConfirmarEjecutar(item,1)" color="success" min-width="0" small>
                 <v-icon small>mdi-check</v-icon>
            </v-btn>
-               <v-btn v-if="item.estado=='On Hire Realizado'" class="px-2 ml-1" @click="confirmarServicio(item)" color="orange" min-width="0" small>
+           <v-btn v-if="item.estado=='On Hire Realizado'" class="px-2 ml-1" @click="confirmarServicio(item)" color="orange" min-width="0" small>
                 <v-icon small>mdi-toggle-switch</v-icon>
+           </v-btn>
+            <v-btn v-if="item.estado=='On Hire Realizado'" class="px-2 ml-1" @click="confirmarServicio(item)" color="orange" min-width="0" small>
+                <v-icon small>mdi-toggle-switch</v-icon>
+           </v-btn>
+            <v-btn v-if="item.estado=='On-Hire Firmado'" class="px-2 ml-1" @click="confirmarServicio(item)" color="blue" min-width="0" small>
+                <v-icon small>mdi-monitor-arrow-down-variant</v-icon>
            </v-btn>
         </template>
          <template  v-slot:item.fechaTentativa="{ item }">
@@ -257,12 +274,22 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-     <v-dialog v-model="dialogConfirmar" persistent max-width="300">
+     <v-dialog v-model="dialogConfirmar" persistent max-width="500">
       <v-card>
         <v-card-title class="text-h5">
           ¿Seguro que decea confirmar el servicio?
         </v-card-title>
         <v-card-text>El registro quedará con estatus Confirmado, el departamento de Log y Ag le dara seguimiento</v-card-text>
+          <v-card-text>
+            <v-file-input
+              v-model="cotizacion"
+              label="Cotizacion"
+            ></v-file-input>
+              <v-file-input
+              v-model="pedido"
+              label="Pedido"
+            ></v-file-input>
+          </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -293,7 +320,9 @@
 import axios from 'axios'
 import emailjs from "emailjs-com";
 import moment from 'moment'
+import S3 from "aws-s3";
   export default {
+
     data() {
       return {
         moment:moment,
@@ -353,6 +382,8 @@ import moment from 'moment'
         puerto:'',
         editedIndex:false,
         programa:'',
+        cotizacion:'',
+        pedido:'',
         direction:'',
         colors:'',
         snackbar: false,
@@ -368,6 +399,36 @@ fechaTentativa:'',
       servicionTentativos:[]
       }
     },
+
+    computed:{
+      config() {
+        return {
+          bucketName: "sam-amls",
+          dirName: "cot" /* optional */,
+          region: "us-west-1",
+          accessKeyId: "AKIAVFDVDRT4BXZ5HKXK",
+          secretAccessKey: "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",
+          s3Url: this.baseUrl
+        };
+      },
+       baseUrl() {
+        return "https://sam-amls.s3.us-west-1.amazonaws.com";
+      },
+      S3Client() {
+      return new S3(this.config);
+    },
+     newFileName() {
+      return Math.random()
+        .toString()
+        .slice(2);
+    },
+      url() {
+      return `${this.baseUrl}/${"cot"}/`;
+    },
+
+    },
+
+
        created () {
           this.selectEmbarcaciones();
           this.selectAgencias();
@@ -554,6 +615,7 @@ fechaTentativa:'',
               this.limpiar()
             },
 
+
           editItem(item){
             this.tipoServicio = item.tipoServicio,
             this.embarcacion = item.embarcacion._id,
@@ -567,10 +629,23 @@ fechaTentativa:'',
           },
           confirmarServicio(_id){
           let me=this;
+
+           let file = me.pedido;
+           let coti = me.cotizacion;
+            let pedido=''
+           let cotizacion=''
+           let numberRando =  Math.random().toString().slice(2);
+            let fileExtension = file.type.split("/")[1];
+            pedido = `${me.url}${numberRando}.${fileExtension}`;
+
+             let numberRando2 =  Math.random().toString().slice(2);
+            let fileExtension2 = coti.type.split("/")[1];
+            cotizacion = `${me.url}${numberRando2}.${fileExtension2}`;
+
           this.dialogConfirmar = false
            let header={"Token":this.$store.state.token};
            let configuracion= {headers: header}
-           axios.put('confirmarServicio/confirmar',{'_id':_id},configuracion)
+           axios.put('confirmarServicio/confirmar',{'_id':_id,pedido:pedido,cotizacion:cotizacion},configuracion)
                .then(function(response){
                 me.addSuccessNotification('Servicio confirmado exitosamente')
                 me.limpiar()
@@ -584,6 +659,8 @@ fechaTentativa:'',
                       response.data.usuario[0].nombre,
                       response.data.correo,
                     );
+                me.S3Client.uploadFile(file, numberRando).finally((e) => {console.log(e)});
+                me.S3Client.uploadFile(coti, numberRando2).finally((e) => {console.log(e)});
                }).catch(function(error){
                  console.log(error)
                });
@@ -594,6 +671,7 @@ fechaTentativa:'',
         },
         dialogConfirmarEjecutar(item){
           this.dialogConfirmar =  true
+          console.log(this.cotizacion)
           this._idConfirmar = item._id
         },
          cancelarServicio(_id){

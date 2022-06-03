@@ -68,7 +68,7 @@
           </v-list-item-content>
         </v-list-item>
         </v-list>
-          <v-list dense nav>
+        <v-list dense nav>
            <v-list-item  :to="'/onhire'">
           <v-list-item-icon>
             <v-icon>mdi-clipboard-clock-outline</v-icon>
@@ -77,6 +77,31 @@
             <v-list-item-title>On-Hire</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+        </v-list>
+
+         <v-list dense nav>
+           <v-list-item  :to="'/movimientos'">
+          <v-list-item-icon>
+            <v-icon>mdi-chart-timeline-variant</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content >
+            <v-list-item-title>Movimientos</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        </v-list>
+
+         <v-list dense nav>
+           <v-list-item  :to="'/ofhire'">
+          <v-list-item-icon>
+            <v-icon>mdi-clipboard-clock-outline</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content >
+            <v-list-item-title>Off-Hire</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         </v-list>
 
 

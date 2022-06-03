@@ -11,12 +11,12 @@
       >
         <base-material-card color="#31467C" icon="mdi-ferry">
           <template v-slot:after-heading>
-            <div v-if="estado=='Confirmado'" class="font-weight-light card-title mt-2">
-             Nuevo On-Hire
-              <span class="body-2">— Completa todos los campos</span>
+            <div v-if="estado=='En Transito'" class="font-weight-light card-title mt-2">
+             Nuevo Off-Hire
+            <span class="body-2">— Completa todos los campos</span>
             </div>
-            <div v-if="estado=='On Hire Realizado'" class="font-weight-light card-title mt-2">
-             Editar On-Hire
+            <div v-if="estado=='Off Hire Realizado'" class="font-weight-light card-title mt-2">
+             Editar Of-Hire
               <span class="body-2">— Completa todos los campos</span>
             </div>
           </template>
@@ -108,7 +108,7 @@
                 <v-col
                   cols="12"
                   class="text-right"
-                   v-if="estado=='Confirmado'"
+                   v-if="estado=='En Transito'"
                 >
                   <v-btn
                     color="#31467C"
@@ -116,12 +116,12 @@
                     @click="guardar"
 
                   >
-                    Guardar On-Hire
+                    Guardar Of-Hire
                   </v-btn>
 
                 </v-col>
                 <v-col
-                 v-if="estado=='On Hire Realizado'"
+                 v-if="estado=='Off Hire Realizado'"
                   cols="10"
                   class="text-right"
                 >
@@ -138,7 +138,7 @@
                  <v-col
                   cols="1"
                   class="text-right"
-                    v-if="estado=='Confirmado' || estado=='On Hire Realizado'"
+                    v-if="estado=='En Transito' || estado=='Off Hire Realizado'"
                 >
 
                   <v-btn
@@ -187,15 +187,15 @@
               <v-icon small>mdi-close</v-icon>
             </v-avatar>Cancelado
           </v-chip>
-            <v-chip small class="ma-2" color="orange" text-color="white" v-if="item.estado=='On Hire Realizado'">
+            <v-chip small class="ma-2" color="orange" text-color="white" v-if="item.estado=='Off Hire Realizado'">
             <v-avatar left>
               <v-icon small>mdi-toggle-switch</v-icon>
-            </v-avatar>On Hire Pendiente de Firma
+            </v-avatar>Of Hire Pendiente de Firma
           </v-chip>
-          <v-chip small class="ma-2" color="blue" text-color="white" v-if="item.estado=='On-Hire Firmado'">
+          <v-chip small class="ma-2" color="blue" text-color="white" v-if="item.estado=='Off-Hire Firmado'">
             <v-avatar left>
               <v-icon small>mdi-toggle-switch</v-icon>
-            </v-avatar>On-Hire Firmado
+            </v-avatar>Off-Hire Firmado
           </v-chip>
            <v-chip small class="ma-2" color="purple" text-color="white" v-if="item.estado=='En Transito'">
             <v-avatar left>
@@ -207,16 +207,16 @@
 
         <template  v-slot:item.action="{ item }">
 
-            <v-btn v-if="item.estado=='Confirmado' " class="px-2 ml-1" color="success" @click="editItemServicio(item)" min-width="0" small>
+            <v-btn v-if="item.estado=='En Transito' " class="px-2 ml-1" color="success" @click="editItemServicio(item)" min-width="0" small>
                 <v-icon small>mdi-book-clock</v-icon>
            </v-btn>
-            <v-btn v-if="item.estado=='On Hire Realizado' " class="px-2 ml-1" color="orange" @click="editItem(item)" min-width="0" small>
+            <v-btn v-if="item.estado=='Off Hire Realizado' " class="px-2 ml-1" color="orange" @click="editItem(item)" min-width="0" small>
                 <v-icon small>mdi-pencil-outline</v-icon>
            </v-btn>
-            <v-btn v-if="item.estado=='On Hire Realizado'" class="px-2 ml-1" @click="mostrarModal(item)" color="orange" min-width="0" small>
+            <v-btn v-if="item.estado=='Off Hire Realizado'" class="px-2 ml-1" @click="mostrarModal(item)" color="orange" min-width="0" small>
                 <v-icon small>mdi-printer-eye</v-icon>
            </v-btn>
-           <v-btn v-if="item.estado=='On-Hire Firmado'" class="px-2 ml-1" @click="guardarPdf(item)" color="blue" min-width="0" small>
+           <v-btn v-if="item.estado=='Off-Hire Firmado'" class="px-2 ml-1" @click="guardarPdf(item)" color="blue" min-width="0" small>
                 <v-icon small>mdi-monitor-arrow-down-variant</v-icon>
            </v-btn>
 
@@ -762,8 +762,8 @@ import jsPDF from 'jspdf'
             value: 'puerto'
           },
           {
-            text: 'On Hire',
-            value: 'onhire.fechaOnHire'
+            text: 'Off Hire',
+            value: 'ofhire.fechaOnHire'
           },
           {
             sortable: false,
@@ -943,12 +943,12 @@ fechaTentativa:'',
               let header = { Token: this.$store.state.token };
               let configuracion = { headers: header };
 
-              if(this.estado=='On Hire Realizado')
+              if(this.estado=='Of Hire Realizado')
               {
                 console.log(this._id)
                 axios
                   .put(
-                    "onHire/edit",
+                    "ofHire/edit",
                     {
                       _id : this._id,
                       diesel: this.diesel,
@@ -978,7 +978,7 @@ fechaTentativa:'',
               }else{
                 axios
                   .post(
-                    "onHire/add",
+                    "ofHire/add",
                     {
                       diesel: this.diesel,
                       usuario: this.$store.state.usuario._id,
@@ -996,10 +996,10 @@ fechaTentativa:'',
                   )
                   .then(function(response) {
                     console.log(me._id)
-                    axios.put('confirmarServicio/updateOnHire',
+                    axios.put('confirmarServicio/updateOfHire',
                     {
                       _id:me._id,
-                      onhire:response.data._id
+                      ofhire:response.data._id
                     },
                     configuracion)
                       .then(function(response){
@@ -1020,8 +1020,9 @@ fechaTentativa:'',
               let header={"Token":this.$store.state.token};
               let configuracion= {headers: header}
               let me=this;
-              axios.get('confirmarServicio/listConfirmados',configuracion).then(function (response){
+              axios.get('confirmarServicio/listServiciosConMovimientos',configuracion).then(function (response){
               me.servicionTentativos=response.data;
+              console.log(me.servicionTentativos)
               }).catch(function(error){
                 console.log(error)
               }).finally(()=>{
@@ -1035,7 +1036,8 @@ fechaTentativa:'',
             },
 
           editItem(item){
-            this._id = item.onhire._id
+            console.log(item)
+            this._id = item.ofhire._id
 
             this.tipoServicio = item.tipoServicio,
             this.embarcacion = item.embarcacion._id,
@@ -1046,17 +1048,17 @@ fechaTentativa:'',
             this.fechaTentativa = item.fechaTentativa
             this.programa = item.programa,
             this.editedIndex = true
-            this.horaOnHire = item.onhire.fechaOnHire
+            this.horaOnHire = item.ofhire.fechaOnHire
 
-            this.diesel = item.onhire.diesel,
-            this.aceite1 = item.onhire.aceite1,
-            this.aceite2 = item.onhire.aceite2,
-            this.hidraulico = item.onhire.hidraulico,
-            this.engranes = item.onhire.engranes,
-            this.aguaPotable = item.onhire.agua,
-            this.muelle = item.onhire.muelle
-            this.observaciones = item.onhire.observaciones,
-            this.motivos = item.onhire.motivos
+            this.diesel = item.ofhire.diesel,
+            this.aceite1 = item.ofhire.aceite1,
+            this.aceite2 = item.ofhire.aceite2,
+            this.hidraulico = item.ofhire.hidraulico,
+            this.engranes = item.ofhire.engranes,
+            this.aguaPotable = item.ofhire.agua,
+            this.muelle = item.ofhire.muelle
+            this.observaciones = item.ofhire.observaciones,
+            this.motivos = item.ofhire.motivos
           },
 
            editItemServicio(item){
@@ -1071,16 +1073,16 @@ fechaTentativa:'',
             this.fechaTentativa = item.fechaTentativa
             this.programa = item.programa,
             this.editedIndex = true
-            this.horaOnHire = item.onhire.fechaOnHire
-            this.muelle = item.onhire.muelle
-            this.diesel = item.onhire.diesel,
-            this.aceite1 = item.onhire.aceite1,
-            this.aceite2 = item.onhire.aceite2,
-            this.hidraulico = item.onhire.hidraulico,
-            this.engranes = item.onhire.engranes,
-            this.aguaPotable = item.onhire.agua,
-            this.observaciones = item.onhire.observaciones,
-            this.motivos = item.onhire.motivos
+            this.horaOnHire = item.ofhire.fechaOnHire
+            this.muelle = item.ofhire.muelle
+            this.diesel = item.ofhire.diesel,
+            this.aceite1 = item.ofhire.aceite1,
+            this.aceite2 = item.ofhire.aceite2,
+            this.hidraulico = item.ofhire.hidraulico,
+            this.engranes = item.ofhire.engranes,
+            this.aguaPotable = item.ofhire.agua,
+            this.observaciones = item.ofhire.observaciones,
+            this.motivos = item.ofhire.motivos
           },
           confirmarServicio(item){
           let me=this;
@@ -1131,7 +1133,7 @@ fechaTentativa:'',
 
            let header={"Token":this.$store.state.token};
            let configuracion= {headers: header}
-           axios.put('onhire/updateSignature',{
+           axios.put('ofhire/updateSignature',{
              '_id':item._id,
              'signatureCapitan':signatureCapitan,
              'signatureCompania':signatureCompania,
@@ -1140,7 +1142,7 @@ fechaTentativa:'',
              },configuracion)
                .then(function(response){
                 me.addSuccessNotification('Servicio firmado')
-                  axios.put('confirmarServicio/signatureOnHire',
+                  axios.put('confirmarServicio/signatureOffHire',
                     {
                       _id:servicio._id,
 
@@ -1166,9 +1168,9 @@ fechaTentativa:'',
             doc.setFont(undefined, 'bold')
             doc.text('ENTRADA Y SALIDA DE CONTRATO',290,70,{align:'center'});
             doc.text('ON Y OFF HIRE',290,80,{align:'center'});
-            doc.rect(140, 110, 15, 15, 'F')
+            doc.rect(140, 110, 15, 15)
             doc.text('ON-HIRE',160,122);
-            doc.rect(380, 110, 15, 15)
+            doc.rect(380, 110, 15, 15,'F')
             doc.text('OFF-HIRE',400,122);
             doc.rect(70, 140, 450, 230)
             doc.setFillColor(49,70,124);
@@ -1185,13 +1187,13 @@ fechaTentativa:'',
             doc.text('ACEITE HIDRAULICO',90,215,{align:'left'});
 
             doc.rect(240, 160, 60, 12)
-            doc.text(item.onhire.diesel.toString(),245,170,{align:'left'});
+            doc.text(item.ofhire.diesel.toString(),245,170,{align:'left'});
             doc.rect(240, 175, 60, 12)
-            doc.text(item.onhire.aceite1.toString(),245,185,{align:'left'});
+            doc.text(item.ofhire.aceite1.toString(),245,185,{align:'left'});
             doc.rect(240, 190, 60, 12)
-            doc.text(item.onhire.aceite2.toString(),245,200,{align:'left'});
+            doc.text(item.ofhire.aceite2.toString(),245,200,{align:'left'});
             doc.rect(240, 205, 60, 12)
-            doc.text(item.onhire.hidraulico.toString(),245,215,{align:'left'});
+            doc.text(item.ofhire.hidraulico.toString(),245,215,{align:'left'});
 
             doc.text('ACEITE DE ENGRANES',310,170,{align:'left'});
             doc.text('AGUA POTABLE',310,185,{align:'left'});
@@ -1215,26 +1217,26 @@ fechaTentativa:'',
             doc.text(item.embarcacion.bandera,155,263)
             doc.line(150,265,230,265)
             doc.text('OPERADO POR: AMLS AGENCY & VESSELS, SIENDO LAS',235,265,{align:'left'});
-            let horaOnHire = moment(item.onhire.horaOnHire).format('H:mm')
+            let horaOnHire = moment(item.ofhire.horaOnHire).format('H:mm')
             doc.text(horaOnHire,465,263)
             doc.line(460,265,500,265)
             doc.text('TIEMPO LOCAL DEL DIA',90,280,{align:'left'});
-            let diaOnHire = moment(item.onhire.horaOnHire).format('Do MMMM YYYY')
+            let diaOnHire = moment(item.ofhire.horaOnHire).format('Do MMMM YYYY')
             doc.text(diaOnHire,190,278)
             doc.line(185,280,260,280)
             doc.text('ESTANDO EL BUQUE EN EL MUELLE',265,280,{align:'left'});
-            doc.text(item.onhire.muelle,415,278)
+            doc.text(item.ofhire.muelle,415,278)
             doc.line(410,280,500,280)
 
             doc.text('QUEDAMOS',90,295,{align:'left'});
-            doc.text('ON-HIRE',145,293)
+            doc.text('OFF-HIRE',145,293)
             doc.line(140,295,260,295)
             doc.text('CON LA COMPAÑIA',265,295,{align:'left'});
             doc.text(item.cliente,350,293);
             doc.line(345,295,500,295)
 
             doc.text('POR MOTIVOS',90,310,{align:'left'});
-            doc.text(item.onhire.motivos,155,307);
+            doc.text(item.ofhire.motivos,155,307);
             doc.line(150,310,310,310)
 
             doc.setFont(undefined,'bold')
@@ -1405,11 +1407,11 @@ fechaTentativa:'',
 
 
             doc.setTextColor(0,0,0);
-            doc.text(item.onhire.observaciones,95,575)
-            doc.addImage(Buffer.from(item.onhire.signatureCapitan.data, 'base64').toString('ascii'),130,610,110,70)
-            doc.addImage(Buffer.from(item.onhire.signatureJefe.data, 'base64').toString('ascii'),130,680,110,70)
-            doc.addImage(Buffer.from(item.onhire.signatureCompania.data, 'base64').toString('ascii'),360,600,110,70)
-            doc.addImage(Buffer.from(item.onhire.signatureAmls.data, 'base64').toString('ascii'),360,670,110,70)
+            doc.text(item.ofhire.observaciones,95,575)
+            doc.addImage(Buffer.from(item.ofhire.signatureCapitan.data, 'base64').toString('ascii'),130,610,110,70)
+            doc.addImage(Buffer.from(item.ofhire.signatureJefe.data, 'base64').toString('ascii'),130,680,110,70)
+            doc.addImage(Buffer.from(item.ofhire.signatureCompania.data, 'base64').toString('ascii'),360,600,110,70)
+            doc.addImage(Buffer.from(item.ofhire.signatureAmls.data, 'base64').toString('ascii'),360,670,110,70)
 
             doc.rect(90, 565, 415, 55),
             doc.line(70,660,260,660)
@@ -1425,13 +1427,13 @@ fechaTentativa:'',
 
 
 
-            doc.save("onhire.pdf")
+            doc.save("ofhire.pdf")
         },
 
 
         mostrarModal(item){
           this.visualizarPdf=true
-          this.mostrarDataModal = item.onhire
+          this.mostrarDataModal = item.ofhire
           this.mostrarDataEmbarcacion = item.embarcacion
           this.mostrarServicio = item
 

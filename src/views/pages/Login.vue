@@ -1,11 +1,15 @@
 <template>
+
   <v-container
     id="login"
     fill-height
     tag="section"
   >
+
     <v-row justify="center">
+
       <v-slide-y-transition appear>
+
         <base-material-card
           color="#31467C"
           light
@@ -13,6 +17,7 @@
           width="400"
           class="px-5 py-3"
         >
+
           <template v-slot:heading>
             <div class="text-center">
               <h1 class="display-2 font-weight-bold mb-2">
