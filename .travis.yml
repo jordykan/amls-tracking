@@ -2,7 +2,7 @@ language: node_js
 node_js:
 - '10.15.1'
 # - '8.10.0'
-cache: yarn
+cache: npm
 before_install:
 # - chmod 755 ./deploy.sh
 install:
